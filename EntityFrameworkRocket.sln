@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkRocket", "EntityFrameworkRocket\EntityFrameworkRocket\EntityFrameworkRocket.csproj", "{F1E5A592-7D19-4459-A29C-A6A7BE0D2404}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkRocket.Vsix", "EntityFrameworkRocket\EntityFrameworkRocket.Vsix\EntityFrameworkRocket.Vsix.csproj", "{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F1E5A592-7D19-4459-A29C-A6A7BE0D2404}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1E5A592-7D19-4459-A29C-A6A7BE0D2404}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1E5A592-7D19-4459-A29C-A6A7BE0D2404}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1E5A592-7D19-4459-A29C-A6A7BE0D2404}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C81A45BF-40D2-4892-A5DA-00102D953BA2}
+	EndGlobalSection
+EndGlobal
