@@ -24,7 +24,7 @@ namespace EntityFrameworkRocket.Refactorings
             var node = root.FindNode(context.Span).FirstAncestorOrSelf<ObjectCreationExpressionSyntax>();
             var lambdas = node?.AncestorsAndSelf().OfType<LambdaExpressionSyntax>().ToList();
             // Only offer a refactoring if the selected node is a good node.
-            if (!(node is ObjectCreationExpressionSyntax objectCreation) || !lambdas.Any())
+            if (node is null || !(node is ObjectCreationExpressionSyntax objectCreation) || !lambdas.Any())
             {
                 return;
             }
@@ -41,10 +41,10 @@ namespace EntityFrameworkRocket.Refactorings
                         return Enumerable.Empty<ParameterSyntax>();
                 }
             });
+            var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
             foreach (var parameter in parameters)
             {
-                var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
-                var newExpressionType = (ITypeSymbol)semanticModel.GetSymbolInfo(objectCreation.Type, context.CancellationToken).Symbol;
+                if (!(semanticModel.GetSymbolInfo(objectCreation.Type, context.CancellationToken).Symbol is ITypeSymbol newExpressionType)) continue;
                 var lambdaParameterType = semanticModel.GetDeclaredSymbol(parameter, context.CancellationToken).Type;
                 var properties = GetProperties(objectCreation, newExpressionType, lambdaParameterType).ToList();
                 if (!properties.Any()) continue;
@@ -58,24 +58,29 @@ namespace EntityFrameworkRocket.Refactorings
         }
 
         private async Task<Document> Execute(Document document,
-                                                     ObjectCreationExpressionSyntax objectCreation, ParameterSyntax parameter,
-                                                     IEnumerable<IPropertySymbol> properties, CancellationToken cancellationToken)
+            ObjectCreationExpressionSyntax objectCreation,
+            ParameterSyntax parameter,
+            IEnumerable<IPropertySymbol> properties,
+            CancellationToken cancellationToken)
         {
             // Get the symbol representing the type to be renamed.
+
             var documentEditor = await DocumentEditor.CreateAsync(document, cancellationToken);
             var assignments = properties.Select(p => MakeAssignment(p, parameter)).Cast<ExpressionSyntax>().ToArray();
             documentEditor.ReplaceNode(objectCreation.Initializer, objectCreation.Initializer.AddExpressions(assignments));
             return documentEditor.GetChangedDocument(); // done!
         }
 
-        private static IEnumerable<IPropertySymbol> GetProperties(ObjectCreationExpressionSyntax objectCreation, ITypeSymbol newExpressionType, ITypeSymbol lambdaParameterType)
+        private static IEnumerable<IPropertySymbol> GetProperties(ObjectCreationExpressionSyntax objectCreation,
+            ITypeSymbol newExpressionType,
+            ITypeSymbol lambdaParameterType)
         {
             var presentAssignments = objectCreation.Initializer.Expressions.OfType<AssignmentExpressionSyntax>()
                 .Select(a => a.Left.ToString()).ToList();
 
-            var newExpressionProperties = newExpressionType.GetMembers().OfType<IPropertySymbol>();
-            var parameterProperties = lambdaParameterType.GetMembers().OfType<IPropertySymbol>();
-            var allProperties = newExpressionProperties.Where(x => parameterProperties.Any(p => p.Name == x.Name) && presentAssignments.All(n => n != x.Name));
+            var newExpressionProperties = newExpressionType.GetMembers().OfType<IPropertySymbol>().Where(p => !p.IsReadOnly).ToList();
+            var parameterProperties = lambdaParameterType.GetMembers().OfType<IPropertySymbol>().Where(p => !p.IsWriteOnly).ToList();
+            var allProperties = newExpressionProperties.Where(x => parameterProperties.Any(p => p.Name == x.Name) && presentAssignments.All(n => n != x.Name)).ToList();
             return allProperties;
         }
 
@@ -83,7 +88,7 @@ namespace EntityFrameworkRocket.Refactorings
         {
             ExpressionSyntax propertyAccessor = SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, SF.IdentifierName(parameter.ToString()),
                 SF.IdentifierName(property.Name));
-            // In case of ICollection<>, append .ToList()
+            // In case of ICollection<>, or a type implementing ICollection<T>, append .ToList()
             bool IsCollection(INamedTypeSymbol t) => t.Name == nameof(ICollection) && t.TypeParameters.Length == 1;
             if (property.Type is INamedTypeSymbol type && (IsCollection(type) || type.AllInterfaces.Any(IsCollection)))
             {
@@ -93,7 +98,7 @@ namespace EntityFrameworkRocket.Refactorings
             return SF.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                 SF.IdentifierName(property.Name),
                 propertyAccessor);
-            // Thing = x.Thing(.ToList()?)
+            // Thing = x.Thing(.ToList())
         }
     }
 }

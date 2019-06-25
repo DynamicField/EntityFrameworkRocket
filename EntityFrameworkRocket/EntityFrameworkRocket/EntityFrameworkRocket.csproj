@@ -6,8 +6,14 @@
     <RootNamespace>EntityFrameworkRocket</RootNamespace>
     <Authors>jeuxjeux20</Authors>
     <Version>0.1.0</Version>
-    <Description>A small set of roslyn refactorings to help you write Entity Framework code faster</Description>
+    <Description>A small set of roslyn refactorings to help you write Entity Framework (6 or Core) code faster.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/jeuxjeux20/EntityFrameworkRocket</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jeuxjeux20/EntityFrameworkRocket</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>entity framework; ef; database; roslyn; refactor</PackageTags>
+    <PackageReleaseNotes>It's here :o</PackageReleaseNotes>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
