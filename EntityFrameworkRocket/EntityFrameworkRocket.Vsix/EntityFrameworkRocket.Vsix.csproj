@@ -57,6 +57,8 @@
     <ProjectReference Include="..\EntityFrameworkRocket\EntityFrameworkRocket.csproj">
       <Project>{14762927-2386-407B-BF3B-DF8A7EF86EB2}</Project>
       <Name>EntityFrameworkRocket</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

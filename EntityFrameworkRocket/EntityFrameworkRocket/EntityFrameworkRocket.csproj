@@ -22,4 +22,8 @@
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Writers\" />
+  </ItemGroup>
+
 </Project>

@@ -59,7 +59,7 @@ namespace EntityFrameworkRocket.Refactorings
             var idSuffix = idPropertySymbol.Name.EndsWith("ID") ? "ID" : "Id";
             var idType = SF.ParseTypeName(idPropertySymbol.Type.ToMinimalDisplayString(editor.SemanticModel, navigationProperty.SpanStart));
             var propertyName = navigationPropertySymbol.Name + idSuffix;
-
+            
             var finalProperty = CreateNavigationProperty(navigationProperty, idType, propertyName);
             editor.ReplaceNode(@class, @class.WithMembers(@class.Members.Insert(@class.Members.IndexOf(navigationProperty) + 1, finalProperty)));
             return editor.GetChangedDocument();
