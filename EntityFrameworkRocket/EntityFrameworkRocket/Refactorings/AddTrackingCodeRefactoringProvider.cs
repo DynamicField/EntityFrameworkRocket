@@ -19,9 +19,11 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddTrackingCodeRefactoringProvider)), Shared]
-    internal class AddTrackingCodeRefactoringProvider : CodeRefactoringProvider
+    public class AddTrackingCodeRefactoringProvider : CodeRefactoringProvider
     {
-        
+        // Dirty workaround to test this as the testing library does not support multiple refactorings
+        internal bool DisableAsTracking { get; set; } = false;
+        internal bool DisableAsNoTracking { get; set; } = false;
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             if (!context.Document.Project.HasAnyEntityFramework()) return;
@@ -32,11 +34,11 @@ namespace EntityFrameworkRocket.Refactorings
             if (result is null) return;
 
             Task<Document> ExecuteLocal(string methodName, CancellationToken token) => Execute(context.Document, result, methodName, token);
-            if (result.IsTracked ?? true)
+            if (!DisableAsNoTracking && (result.IsTracked ?? true))
             {
                 CodeAction.Create("Add AsNoTracking()", t => ExecuteLocal( "AsNoTracking", t)).Register(context);
             }
-            if (!result.IsTracked ?? true)
+            if (!DisableAsTracking && (!result.IsTracked ?? true))
             {
                 CodeAction.Create("Add AsTracking()", t => ExecuteLocal("AsTracking", t)).Register(context);
             }

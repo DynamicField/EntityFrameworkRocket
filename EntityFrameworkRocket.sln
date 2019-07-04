@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkRocket", "En
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkRocket.Vsix", "EntityFrameworkRocket\EntityFrameworkRocket.Vsix\EntityFrameworkRocket.Vsix.csproj", "{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkRocket.Tests", "EntityFrameworkRocket.Tests\EntityFrameworkRocket.Tests.csproj", "{2D063EFC-65AD-4694-85CF-062E11A9440F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkRocket.Tests.EFCoreLib", "EntityFrameworkRocket.Tests.EFCoreLib\EntityFrameworkRocket.Tests.EFCoreLib.csproj", "{4F24F39B-F6FA-4F8F-B2DD-FEB3634EFBEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1BBE027-0A1C-49AD-A376-DA984D9EA57B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D063EFC-65AD-4694-85CF-062E11A9440F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D063EFC-65AD-4694-85CF-062E11A9440F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D063EFC-65AD-4694-85CF-062E11A9440F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D063EFC-65AD-4694-85CF-062E11A9440F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F24F39B-F6FA-4F8F-B2DD-FEB3634EFBEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F24F39B-F6FA-4F8F-B2DD-FEB3634EFBEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F24F39B-F6FA-4F8F-B2DD-FEB3634EFBEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F24F39B-F6FA-4F8F-B2DD-FEB3634EFBEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

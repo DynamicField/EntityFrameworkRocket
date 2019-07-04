@@ -14,7 +14,7 @@ using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MapPropertiesCodeRefactoringProvider)), Shared]
-    internal class MapPropertiesCodeRefactoringProvider : CodeRefactoringProvider
+    public class MapPropertiesCodeRefactoringProvider : CodeRefactoringProvider
     {
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {

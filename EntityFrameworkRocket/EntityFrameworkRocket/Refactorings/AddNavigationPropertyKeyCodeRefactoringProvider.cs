@@ -17,7 +17,7 @@ using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddNavigationPropertyKeyCodeRefactoringProvider)), Shared]
-    internal class AddNavigationPropertyKeyCodeRefactoringProvider : CodeRefactoringProvider
+    public class AddNavigationPropertyKeyCodeRefactoringProvider : CodeRefactoringProvider
     {
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
@@ -26,7 +26,7 @@ namespace EntityFrameworkRocket.Refactorings
 
             var navigationProperty = root.FindNode(context.Span).FirstAncestorOrSelf<PropertyDeclarationSyntax>();
             var modelClass = navigationProperty?.FirstAncestorOrSelf<ClassDeclarationSyntax>();
-            if (navigationProperty is null || navigationProperty.Type is PredefinedTypeSyntax) return;
+            if (navigationProperty is null) return;
 
             var propertyType = (ITypeSymbol)semanticModel.GetSymbolInfo(navigationProperty?.Type).Symbol;
             var idProperty = propertyType?.GetMembers().OfType<IPropertySymbol>().FirstOrDefault(p => p.IsId());

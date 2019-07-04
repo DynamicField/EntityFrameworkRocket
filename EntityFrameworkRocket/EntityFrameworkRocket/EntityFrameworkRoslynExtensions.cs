@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace EntityFrameworkRocket
 {
-    internal static class EntityFrameworkRoslynExtensions
+    internal static partial class RoslynExtensions
     {
         public static bool IsNotMapped(this IPropertySymbol property)
         {
@@ -79,7 +79,7 @@ namespace EntityFrameworkRocket
             return ((ExpressionSyntax)node.FirstAncestorOrSelf<MemberAccessExpressionSyntax>() ?? node.FirstAncestorOrSelf<InvocationExpressionSyntax>())?
                 .DescendantNodesAndSelf()
                 .OfType<ExpressionSyntax>()
-                .Where(x => !x.TypeEquals(x.Parent, semanticModel) ?? true) // If the parent has the exact same type, use it instead.
+                .Where(x => x.Parent is MemberAccessExpressionSyntax && (!x.TypeEquals(x.Parent, semanticModel) ?? true)) // If the parent has the exact same type, use it instead.
                 .LastOrDefault(m => m.IsQueryable(semanticModel));
         }
         public static INamedTypeSymbol GetUnderlyingExpressionType(this INamedTypeSymbol symbol)
@@ -91,11 +91,6 @@ namespace EntityFrameworkRocket
 
             return symbol;
         }
-        public static bool HasAnyEntityFramework(this Project project) =>
-            project.HasEntityFrameworkClassic() || project.HasEntityFrameworkCore();
-
-        public static bool HasEntityFrameworkClassic(this Project project) =>
-            project.MetadataReferences.HasEntityFrameworkClassic();
 
         public static bool HasEntityFrameworkCore(this IEnumerable<MetadataReference> refs)
         {
@@ -105,8 +100,39 @@ namespace EntityFrameworkRocket
         {
             return refs.Any(p => p.Display.EndsWith("EntityFramework.dll"));
         }
+        public static IEnumerable<INamedTypeSymbol> GetBaseTypesAndThis(this INamedTypeSymbol namedType)
+        {
+            var current = namedType;
+            while (current != null)
+            {
+                yield return current;
+                current = current.BaseType;
+            }
+        }
+        public static bool CheckInheritors(this INamedTypeSymbol type, Func<INamedTypeSymbol, bool> predicate)
+        {
+            return type.GetBaseTypesAndThis().Any(predicate);
+        }
+        public static bool CheckInheritors(this ExpressionSyntax expression, Func<INamedTypeSymbol, bool> predicate, SemanticModel semanticModel)
+        {
+            var type = semanticModel.GetTypeInfo(expression);
+            return ((type.Type ?? type.ConvertedType) as INamedTypeSymbol).CheckInheritors(predicate);
+        }
 
-        public static bool HasEntityFrameworkCore(this Project project) =>
-            project.MetadataReferences.HasEntityFrameworkCore();
+        public static bool? TypeEquals(this SyntaxNode expression, SyntaxNode other, SemanticModel semanticModel)
+        {
+            if (other is null || expression is null) return null;
+            var expressionType = semanticModel.GetTypeInfo(expression).Type;
+            var otherType = semanticModel.GetTypeInfo(other).Type;
+            if (otherType is null || expressionType is null) return null;
+            return otherType.Equals(expressionType);
+        }
+
+        public static ExpressionSyntax RemoveCall(this InvocationExpressionSyntax node)
+        {
+            var n = node.Expression;
+            if (n is MemberAccessExpressionSyntax memberAccess) n = memberAccess.Expression;
+            return n;
+        }
     }
 }
