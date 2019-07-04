@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="EntityFrameworkRocket.d149805d-bcb9-45bf-9f0f-10ae29c82834" Version="1.1" Language="en-US" Publisher="jeuxjeux20"/>
+        <Identity Id="EntityFrameworkRocket.d149805d-bcb9-45bf-9f0f-10ae29c82834" Version="1.2" Language="en-US" Publisher="jeuxjeux20"/>
         <DisplayName>Entity Framework Rocket</DisplayName>
         <Description xml:space="preserve">A small set of roslyn refactorings and analysers to help you write Entity Framework (6 or Core) code faster with less mistakes.</Description>
         <Preview>true</Preview>

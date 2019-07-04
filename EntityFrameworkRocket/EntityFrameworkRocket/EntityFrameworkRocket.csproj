@@ -14,6 +14,7 @@
     <PackageTags>entity framework; ef; database; roslyn; refactor</PackageTags>
     <PackageReleaseNotes>It's here :o</PackageReleaseNotes>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
