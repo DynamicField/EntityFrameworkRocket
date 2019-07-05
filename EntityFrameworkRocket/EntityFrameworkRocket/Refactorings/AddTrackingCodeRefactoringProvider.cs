@@ -1,29 +1,23 @@
-using System;
 using System.Composition;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EntityFrameworkRocket.Walkers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Rename;
-using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddTrackingCodeRefactoringProvider)), Shared]
     public class AddTrackingCodeRefactoringProvider : CodeRefactoringProvider
     {
+        public const string AddAsNoTrackingTitle = "Add AsNoTracking()";
+        public const string AddAsTrackingTitle = "Add AsTracking()";
+
         // Dirty workaround to test this as the testing library does not support multiple refactorings
-        internal bool DisableAsTracking { get; set; } = false;
-        internal bool DisableAsNoTracking { get; set; } = false;
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             if (!context.Document.Project.HasAnyEntityFramework()) return;
@@ -34,13 +28,13 @@ namespace EntityFrameworkRocket.Refactorings
             if (result is null) return;
 
             Task<Document> ExecuteLocal(string methodName, CancellationToken token) => Execute(context.Document, result, methodName, token);
-            if (!DisableAsNoTracking && (result.IsTracked ?? true))
+            if (result.IsTracked ?? true)
             {
-                CodeAction.Create("Add AsNoTracking()", t => ExecuteLocal( "AsNoTracking", t)).Register(context);
+                CodeAction.Create(AddAsNoTrackingTitle, t => ExecuteLocal( "AsNoTracking", t), AddAsNoTrackingTitle).Register(context);
             }
-            if (!DisableAsTracking && (!result.IsTracked ?? true))
+            if (!result.IsTracked ?? true)
             {
-                CodeAction.Create("Add AsTracking()", t => ExecuteLocal("AsTracking", t)).Register(context);
+                CodeAction.Create(AddAsTrackingTitle, t => ExecuteLocal("AsTracking", t), AddAsTrackingTitle).Register(context);
             }
         }
 

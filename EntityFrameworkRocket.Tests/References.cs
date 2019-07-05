@@ -1,10 +1,9 @@
 ﻿using Gu.Roslyn.Asserts;
 [assembly: TransitiveMetadataReferences(
-    typeof(Microsoft.EntityFrameworkCore.DbContext))]
-[assembly: MetadataReference(typeof(object), new[] { "global", "corlib", "mscorlib" })]
-[assembly: MetadataReference(typeof(System.Diagnostics.Debug), new[] { "global", "System" })]
+    typeof(Microsoft.EntityFrameworkCore.DbContext),
+    typeof(EntityFrameworkRocket.Tests.EFCoreLib.TestDbContext))]
 [assembly: TransitiveMetadataReferences(typeof(Microsoft.CodeAnalysis.CSharp.CSharpCompilation))]
 [assembly: MetadataReferences(
     typeof(System.Linq.Enumerable),
     typeof(System.Linq.IQueryable),
-    typeof(EntityFrameworkRocket.Tests.EFCoreLib.TestDbContext))]
+    typeof(System.ComponentModel.DataAnnotations.Schema.NotMappedAttribute))]

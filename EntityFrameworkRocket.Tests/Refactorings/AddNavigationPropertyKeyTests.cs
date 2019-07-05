@@ -1,6 +1,5 @@
 ﻿using EntityFrameworkRocket.Refactorings;
 using Gu.Roslyn.Asserts;
-using Microsoft.CodeAnalysis.CodeRefactorings;
 using NUnit.Framework;
 
 namespace EntityFrameworkRocket.Tests.Refactorings

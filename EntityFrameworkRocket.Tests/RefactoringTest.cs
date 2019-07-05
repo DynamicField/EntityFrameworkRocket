@@ -1,5 +1,4 @@
-﻿using Gu.Roslyn.Asserts;
-using Microsoft.CodeAnalysis.CodeRefactorings;
+﻿using Microsoft.CodeAnalysis.CodeRefactorings;
 
 namespace EntityFrameworkRocket.Tests
 {

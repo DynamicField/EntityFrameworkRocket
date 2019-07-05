@@ -49,11 +49,8 @@ namespace EntityFrameworkRocket.Refactorings
                 var properties = GetProperties(objectCreation, newExpressionType, lambdaParameterType).ToList();
                 if (!properties.Any()) continue;
                 // Create the action.
-                var action = CodeAction.Create($"Add mapping properties from \"{parameter.ToString()}\"",
-                    c => Execute(context.Document, objectCreation, parameter, properties, c));
-
-                // Register this code action.
-                context.RegisterRefactoring(action);
+                CodeAction.Create($"Add mapping properties from \"{parameter.ToString()}\"",
+                    c => Execute(context.Document, objectCreation, parameter, properties, c)).Register(context);
             }
         }
 
@@ -63,8 +60,6 @@ namespace EntityFrameworkRocket.Refactorings
             IEnumerable<IPropertySymbol> properties,
             CancellationToken cancellationToken)
         {
-            // Get the symbol representing the type to be renamed.
-
             var documentEditor = await DocumentEditor.CreateAsync(document, cancellationToken);
             var assignments = properties.Select(p => MakeAssignment(p, parameter)).Cast<ExpressionSyntax>().ToArray();
             documentEditor.ReplaceNode(objectCreation.Initializer, objectCreation.Initializer.AddExpressions(assignments));

@@ -1,24 +1,20 @@
-using System;
 using System.Composition;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Rename;
-using Microsoft.CodeAnalysis.Text;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddNavigationPropertyKeyCodeRefactoringProvider)), Shared]
     public class AddNavigationPropertyKeyCodeRefactoringProvider : CodeRefactoringProvider
     {
+        public const string Title = "Create a foreign key property";
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -42,8 +38,7 @@ namespace EntityFrameworkRocket.Refactorings
                 return;
             }
 
-            var action = CodeAction.Create("Create a foreign key property",
-                t => Execute(context.Document, modelClass, navigationProperty, propertySymbol, idProperty, t));
+            var action = CodeAction.Create(Title, t => Execute(context.Document, modelClass, navigationProperty, propertySymbol, idProperty, t));
             context.RegisterRefactoring(action);
         }
 

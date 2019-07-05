@@ -1,5 +1,4 @@
-﻿using Gu.Roslyn.Asserts;
-using Microsoft.CodeAnalysis.Diagnostics;
+﻿using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace EntityFrameworkRocket.Tests
 {

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace EntityFrameworkRocket.Tests.EFCoreLib
@@ -7,5 +7,6 @@ namespace EntityFrameworkRocket.Tests.EFCoreLib
     {
         public DbSet<Thing> Things { get; set; }
         public DbSet<World> Worlds { get; set; }
+
     }
 }

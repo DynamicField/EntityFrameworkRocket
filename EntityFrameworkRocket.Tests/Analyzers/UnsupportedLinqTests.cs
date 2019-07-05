@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using EntityFrameworkRocket.Analyzers;
 using Gu.Roslyn.Asserts;
-using Microsoft.CodeAnalysis;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 namespace EntityFrameworkRocket.Tests.Analyzers
 {
