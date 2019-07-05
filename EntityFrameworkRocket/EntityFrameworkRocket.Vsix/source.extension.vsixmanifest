@@ -4,6 +4,8 @@
         <Identity Id="EntityFrameworkRocket.d149805d-bcb9-45bf-9f0f-10ae29c82834" Version="1.2.1" Language="en-US" Publisher="jeuxjeux20"/>
         <DisplayName>Entity Framework Rocket</DisplayName>
         <Description xml:space="preserve">Some useful refactorings and analysers to be more efficient with Entity Framework.</Description>
+        <Icon>logo.png</Icon>
+        <PreviewImage>logo.png</PreviewImage>
         <Preview>true</Preview>
     </Metadata>
     <Installation>
