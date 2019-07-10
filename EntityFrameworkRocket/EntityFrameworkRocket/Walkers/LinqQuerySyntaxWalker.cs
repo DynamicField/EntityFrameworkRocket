@@ -15,8 +15,8 @@ namespace EntityFrameworkRocket.Walkers
         private LinqQuery _query = new LinqQuery();
         public LinqQuery VisitQuery(ExpressionSyntax query, ExpressionSyntax source)
         {
-            _query = new LinqQuery { Expression = query, SourceCollection = source};
-            _query = new LinqQuery { Expression = query, SourceCollection = source};
+            _query = new LinqQuery { Expression = query, SourceCollection = source };
+            _query = new LinqQuery { Expression = query, SourceCollection = source };
             Visit(query);
             return _query;
         }
@@ -24,7 +24,7 @@ namespace EntityFrameworkRocket.Walkers
         {
             if (_semanticModel.GetSymbolInfo(node).Symbol is IMethodSymbol symbol)
             {
-                _query.Steps.AddFirst(new LinqQuery.Step { Invocation = node, Symbol = symbol });
+                _query.Steps.AddFirst(new LinqQuery.Step(symbol, node));
             }
             base.Visit(node.Expression);
         }

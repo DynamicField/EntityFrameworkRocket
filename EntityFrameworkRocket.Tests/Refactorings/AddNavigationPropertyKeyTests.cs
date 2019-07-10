@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace EntityFrameworkRocket.Tests.Refactorings
 {
     [TestFixture]
-    public class AddNavigationPropertyKeyTests : RefactoringTest<AddNavigationPropertyKeyCodeRefactoringProvider>
+    public class AddNavigationPropertyKeyTests : RefactoringTest<AddNavigationPropertyKeyRefactoring>
     {
         [Test]
         public void Refactoring_NoPropertyKey_AddsKey()

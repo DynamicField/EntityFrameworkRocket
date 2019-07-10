@@ -13,8 +13,8 @@ using Microsoft.CodeAnalysis.Editing;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
-    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MapPropertiesCodeRefactoringProvider)), Shared]
-    public class MapPropertiesCodeRefactoringProvider : CodeRefactoringProvider
+    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MapPropertiesRefactoring)), Shared]
+    public class MapPropertiesRefactoring : CodeRefactoringProvider
     {
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
@@ -38,7 +38,7 @@ namespace EntityFrameworkRocket.Refactorings
                     case ParenthesizedLambdaExpressionSyntax p:
                         return p.ParameterList.Parameters;
                     default:
-                        return Enumerable.Empty<ParameterSyntax>();
+                        return Enumerable.Empty<ParameterSyntax>(); 
                 }
             });
             var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
@@ -49,8 +49,9 @@ namespace EntityFrameworkRocket.Refactorings
                 var properties = GetProperties(objectCreation, newExpressionType, lambdaParameterType).ToList();
                 if (!properties.Any()) continue;
                 // Create the action.
-                CodeAction.Create($"Add mapping properties from \"{parameter.ToString()}\"",
-                    c => Execute(context.Document, objectCreation, parameter, properties, c)).Register(context);
+                var title = $"Add mapping properties from \"{parameter.ToString()}\"";
+                CodeAction.Create(title,
+                    c => Execute(context.Document, objectCreation, parameter, properties, c), title).Register(context);
             }
         }
 

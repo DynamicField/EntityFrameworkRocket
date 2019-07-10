@@ -20,8 +20,18 @@ namespace EntityFrameworkRocket
         }
         public class Step
         {
-            public IMethodSymbol Symbol { get; set; }
-            public InvocationExpressionSyntax Invocation { get; set; }
+            public Step(IMethodSymbol symbol, InvocationExpressionSyntax invocation)
+            {
+                Symbol = symbol;
+                Invocation = invocation;
+            }
+
+            public IMethodSymbol Symbol { get; }
+
+            public InvocationExpressionSyntax Invocation { get; }
+            public ExpressionSyntax Source =>
+                Invocation.Expression is MemberAccessExpressionSyntax memberAccess ? memberAccess.Expression : Invocation.Expression;
+
             public string Name => Symbol.Name;
             private string Parameters => string.Join(",",
                 Invocation.ArgumentList.Arguments.Select(x => x.Expression is LambdaExpressionSyntax ? "lambda" : x.ToString()));

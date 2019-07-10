@@ -11,8 +11,8 @@ using Microsoft.CodeAnalysis.Editing;
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
-    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddNavigationPropertyKeyCodeRefactoringProvider)), Shared]
-    public class AddNavigationPropertyKeyCodeRefactoringProvider : CodeRefactoringProvider
+    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddNavigationPropertyKeyRefactoring)), Shared]
+    public class AddNavigationPropertyKeyRefactoring : CodeRefactoringProvider
     {
         public const string Title = "Create a foreign key property";
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
@@ -24,7 +24,7 @@ namespace EntityFrameworkRocket.Refactorings
             var modelClass = navigationProperty?.FirstAncestorOrSelf<ClassDeclarationSyntax>();
             if (navigationProperty is null) return;
 
-            var propertyType = (ITypeSymbol)semanticModel.GetSymbolInfo(navigationProperty?.Type).Symbol;
+            var propertyType = (ITypeSymbol)semanticModel.GetSymbolInfo(navigationProperty.Type).Symbol;
             var idProperty = propertyType?.GetMembers().OfType<IPropertySymbol>().FirstOrDefault(p => p.IsId());
             if (idProperty is null)
             {
@@ -38,7 +38,7 @@ namespace EntityFrameworkRocket.Refactorings
                 return;
             }
 
-            var action = CodeAction.Create(Title, t => Execute(context.Document, modelClass, navigationProperty, propertySymbol, idProperty, t));
+            var action = CodeAction.Create(Title, t => Execute(context.Document, modelClass, navigationProperty, propertySymbol, idProperty, t), Title);
             context.RegisterRefactoring(action);
         }
 

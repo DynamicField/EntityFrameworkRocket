@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace EntityFrameworkRocket.Tests
 {
@@ -32,7 +33,18 @@ using System.Collections.Generic;";
         public static string Indent(this string code, int tabCount)
         {
             var tabs = new string(' ', tabCount * 4);
-            return (tabs + code).Replace(Environment.NewLine, Environment.NewLine + tabs);
+            var builder = new StringBuilder();
+            foreach (var line in code.Split(Environment.NewLine))
+            {
+                if (string.IsNullOrWhiteSpace(line)) builder.AppendLine();
+                else
+                {
+                    builder.Append(tabs);
+                    builder.AppendLine(line);
+                }
+            }
+
+            return builder.ToString();
         }
     }
 }

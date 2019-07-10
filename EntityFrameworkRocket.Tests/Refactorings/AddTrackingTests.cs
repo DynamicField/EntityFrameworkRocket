@@ -2,11 +2,11 @@
 using EntityFrameworkRocket.Refactorings;
 using Gu.Roslyn.Asserts;
 using NUnit.Framework;
-using static EntityFrameworkRocket.Refactorings.AddTrackingCodeRefactoringProvider;
+using static EntityFrameworkRocket.Refactorings.AddTrackingRefactoring;
 namespace EntityFrameworkRocket.Tests.Refactorings
 {
     [TestFixture]
-    public class AddTrackingTests : RefactoringTest<AddTrackingCodeRefactoringProvider>
+    public class AddTrackingTests : RefactoringTest<AddTrackingRefactoring>
     {
         private static string TitleFor(string name) =>
             name == "AsNoTracking" ? AddAsNoTrackingTitle : AddAsTrackingTitle;

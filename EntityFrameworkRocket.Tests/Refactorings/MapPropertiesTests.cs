@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace EntityFrameworkRocket.Tests.Refactorings
 {
-    public class MapPropertiesTests : RefactoringTest<MapPropertiesCodeRefactoringProvider>
+    public class MapPropertiesTests : RefactoringTest<MapPropertiesRefactoring>
     {
         private static string TestCode(string code)
             => CodeTemplates.BaseCoreUsings + @"
@@ -18,12 +18,12 @@ void Test(TestDbContext context)
         [Test]
         public void Refactoring_ThingToThingDto_MapsAllProperties()
         {
-            var code = TestCode(
-@"context.Things.Select(x => new ThingDto
+            var code = TestCode(@"
+context.Things.Select(x => new ThingDto
 {↓
 });");
-            var fixedCode = TestCode(
-@"context.Things.Select(x => new ThingDto
+            var fixedCode = TestCode(@"
+context.Things.Select(x => new ThingDto
 {
     Id = x.Id,
     Name = x.Name,
@@ -36,12 +36,12 @@ void Test(TestDbContext context)
         [Test]
         public void Refactoring_Collection_MapsAndAddsToList()
         {
-            var code = TestCode(
-@"Enumerable.Empty<CollectionEntity>().Select(x => new CollectionEntityDto
+            var code = TestCode(@"
+Enumerable.Empty<CollectionEntity>().Select(x => new CollectionEntityDto
 {↓
 });");
-            var fixedCode = TestCode(
-@"Enumerable.Empty<CollectionEntity>().Select(x => new CollectionEntityDto
+            var fixedCode = TestCode(@"
+Enumerable.Empty<CollectionEntity>().Select(x => new CollectionEntityDto
 {
     Worlds = x.Worlds.ToList()
 });");
@@ -52,12 +52,12 @@ void Test(TestDbContext context)
         [Test]
         public void Refactoring_WithReadOnlyDto_DoesNotMapReadOnlyProperty()
         {
-            var code = TestCode(
-@"Enumerable.Empty<SimpleEntity>().Select(x => new SimpleEntityReadOnlyIdDto
+            var code = TestCode(@"
+Enumerable.Empty<SimpleEntity>().Select(x => new SimpleEntityReadOnlyIdDto
 {↓
 });");
-            var fixedCode = TestCode(
-@"Enumerable.Empty<SimpleEntity>().Select(x => new SimpleEntityReadOnlyIdDto
+            var fixedCode = TestCode(@"
+Enumerable.Empty<SimpleEntity>().Select(x => new SimpleEntityReadOnlyIdDto
 {
     Name = x.Name
 });"); // Id is a readonly property in the dto
@@ -68,12 +68,12 @@ void Test(TestDbContext context)
         [Test]
         public void Refactoring_WithSetOnlyEntity_DoesNotMapSetOnlyProperty()
         {
-            var code = TestCode(
-                @"Enumerable.Empty<SetOnlyNameEntity>().Select(x => new SetOnlyNameEntity
+            var code = TestCode(@"
+Enumerable.Empty<SetOnlyNameEntity>().Select(x => new SetOnlyNameEntity
 {↓
 });");
-            var fixedCode = TestCode(
-                @"Enumerable.Empty<SetOnlyNameEntity>().Select(x => new SetOnlyNameEntity
+            var fixedCode = TestCode(@"
+Enumerable.Empty<SetOnlyNameEntity>().Select(x => new SetOnlyNameEntity
 {
     Id = x.Id
 });"); // Id is a readonly property in the dto
@@ -101,12 +101,12 @@ Enumerable.Empty<Test>().Select(x => new TestDto { ↓ });
         [Test]
         public void Refactoring_WithParenthesizedLambda_MapsAllProperties()
         {
-            var code = TestCode(
-@"Enumerable.Empty<SimpleEntity>().Select((x) => new SimpleEntityDto
+            var code = TestCode(@"
+Enumerable.Empty<SimpleEntity>().Select((x) => new SimpleEntityDto
 {↓
 });");
-            var fixedCode = TestCode(
-@"Enumerable.Empty<SimpleEntity>().Select((x) => new SimpleEntityDto
+            var fixedCode = TestCode(@"
+Enumerable.Empty<SimpleEntity>().Select((x) => new SimpleEntityDto
 {
     Id = x.Id,
     Name = x.Name

@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CodeRefactorings;
 
 namespace EntityFrameworkRocket.Refactorings
 {
-    public static class Extensions
+    public static class RefactoringExtensions
     {
         public static void Register(this CodeAction action, CodeRefactoringContext context) =>
             context.RegisterRefactoring(action);

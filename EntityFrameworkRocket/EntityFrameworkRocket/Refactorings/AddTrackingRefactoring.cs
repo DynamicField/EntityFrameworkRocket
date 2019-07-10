@@ -11,8 +11,8 @@ using Microsoft.CodeAnalysis.Editing;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace EntityFrameworkRocket.Refactorings
 {
-    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddTrackingCodeRefactoringProvider)), Shared]
-    public class AddTrackingCodeRefactoringProvider : CodeRefactoringProvider
+    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(AddTrackingRefactoring)), Shared]
+    public class AddTrackingRefactoring : CodeRefactoringProvider
     {
         public const string AddAsNoTrackingTitle = "Add AsNoTracking()";
         public const string AddAsTrackingTitle = "Add AsTracking()";

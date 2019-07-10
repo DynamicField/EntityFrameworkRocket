@@ -42,7 +42,6 @@ namespace EntityFrameworkRocket.Tests
         private static bool IsIdPropertyTest(string classProperty)
         {
             var (root, semanticModel) = TestCompilation.Create($@"
-using Microsoft.EntityFrameworkCore;
 class Test
 {{
     {classProperty}
@@ -57,7 +56,6 @@ class Test
         public void GetUnderlyingExpressionType_WithExpression_GivesUnderlyingType()
         {
             var (root, semanticModel) = TestCompilation.Create(@"
-using System.Linq;
 using System.Linq.Expressions;
 Expression<Func<object>> variable;
 ");
@@ -72,11 +70,7 @@ Expression<Func<object>> variable;
         [Test]
         public void GetUnderlyingExpressionType_NotExpression_GivesSameType()
         {
-            var (root, semanticModel) = TestCompilation.Create(@"
-using System.Linq;
-using System.Linq.Expressions;
-object variable;
-");
+            var (root, semanticModel) = TestCompilation.Create("object variable;");
             var variable = root.DescendantNodes().OfType<VariableDeclarationSyntax>().First();
             var symbol = (INamedTypeSymbol)semanticModel.GetTypeInfo(variable.Type).Type;
 

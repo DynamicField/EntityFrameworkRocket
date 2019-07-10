@@ -10,7 +10,7 @@ namespace EntityFrameworkRocket.Analyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class UnsupportedLinqAnalyzer : DiagnosticAnalyzer
     {
-        private const string DiagnosticId = "EFX0001";
+        internal const string DiagnosticId = "EFX0001";
         private const string Title = "Unsupported LINQ expression";
         private const string MessageFormat = "This version of Entity Framework does not support {0}, this expression may throw an exception at runtime.";
 
@@ -28,12 +28,11 @@ namespace EntityFrameworkRocket.Analyzers
 
         private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            var query = context.Node.GetLinqQuery(context.SemanticModel);
+            var query = context.GetLinqQuery();
             if (query is null) return;
-            if (!query.Expression.IsEquivalentTo(context.Node)) return;
             var sourceCollectionType = context.SemanticModel.GetTypeInfo(query.SourceCollection).Type;
             // We ensure that it comes from a DbSet to avoid conflict with other libraries that may use IQueryable.
-            if (sourceCollectionType?.Name != "DbSet") return;
+            if (sourceCollectionType?.Name != EntityFrameworkConstants.DbSet) return;
             foreach (var step in query.Steps)
             {
                 if (step.Symbol.ReceiverType.Name != nameof(IQueryable)) return; // If it has been used as en IEnumerable, it is executed client side.
@@ -48,12 +47,13 @@ namespace EntityFrameworkRocket.Analyzers
                         if (step.Symbol.Parameters.FirstOrDefault()?.Type is INamedTypeSymbol func)
                         {
                             var funcValue = func.GetUnderlyingExpressionType();
-                            // It is maybe using a select statement having a return type of int, it has at least 2 arguments
+                            // It is maybe using a select statement having a return type of int. Check if there is more than 2 args.
                             if (funcValue.TypeArguments.Length <= 2 || funcValue.TypeArguments[1].Name != nameof(Int32)) return;
                             // Take i from (x, i)
                             var locationTarget =
                                 (step.Invocation.ArgumentList.Arguments.FirstOrDefault()?.Expression as
-                                    ParenthesizedLambdaExpressionSyntax)?.ParameterList.Parameters.ElementAtOrDefault(1) as SyntaxNode ?? step.Invocation;
+                                    ParenthesizedLambdaExpressionSyntax)?.ParameterList.Parameters.ElementAtOrDefault(1);
+                            if (locationTarget is null) return; // no second parameter used? then it's fine. but weird.
                             var diagnostic = Diagnostic.Create(Rule, locationTarget.GetLocation(),
                                 $"using the second index parameter in {step.Name}");
                             context.ReportDiagnostic(diagnostic);
