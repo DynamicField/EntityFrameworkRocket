@@ -1,5 +1,7 @@
-﻿using EntityFrameworkRocket.Refactorings;
+﻿using System;
+using EntityFrameworkRocket.Refactorings;
 using Gu.Roslyn.Asserts;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 using NUnit.Framework;
 
 namespace EntityFrameworkRocket.Tests.Refactorings

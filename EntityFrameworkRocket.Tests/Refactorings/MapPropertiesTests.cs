@@ -34,6 +34,23 @@ context.Things.Select(x => new ThingDto
         }
 
         [Test]
+        public void Refactoring_ChildThingToChildThingDto_MapsAllProperties()
+        {
+            var code = TestCode(@"
+context.Things.OfType<ChildThing>().Select(x => new ChildThingDto
+{↓
+});");
+            var fixedCode = TestCode(@"
+context.Things.OfType<ChildThing>().Select(x => new ChildThingDto
+{
+    Id = x.Id,
+    ChildProperty = x.ChildProperty
+});");
+
+            RoslynAssert.Refactoring(Refactoring, code, fixedCode);
+        }
+
+        [Test]
         public void Refactoring_Collection_MapsAndAddsToList()
         {
             var code = TestCode(@"

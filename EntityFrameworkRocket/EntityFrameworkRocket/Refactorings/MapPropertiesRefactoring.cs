@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,7 +40,7 @@ namespace EntityFrameworkRocket.Refactorings
                     case ParenthesizedLambdaExpressionSyntax p:
                         return p.ParameterList.Parameters;
                     default:
-                        return Enumerable.Empty<ParameterSyntax>(); 
+                        return Enumerable.Empty<ParameterSyntax>();
                 }
             });
             var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
@@ -74,8 +76,20 @@ namespace EntityFrameworkRocket.Refactorings
             var presentAssignments = objectCreation.Initializer.Expressions.OfType<AssignmentExpressionSyntax>()
                 .Select(a => a.Left.ToString()).ToList();
 
-            var newExpressionProperties = newExpressionType.GetMembers().OfType<IPropertySymbol>().Where(p => !p.IsReadOnly).ToList();
-            var parameterProperties = lambdaParameterType.GetMembers().OfType<IPropertySymbol>().Where(p => !p.IsWriteOnly).ToList();
+            var newExpressionProperties = newExpressionType
+                .GetBaseTypesAndThis()
+                .SelectMany(t => t.GetMembers())
+                .OfType<IPropertySymbol>()
+                .Where(p => !p.IsReadOnly && !p.IsStatic)
+                .ToList();
+
+            var parameterProperties = lambdaParameterType
+                .GetBaseTypesAndThis()
+                .SelectMany(t => t.GetMembers())
+                .OfType<IPropertySymbol>()
+                .Where(p => !p.IsWriteOnly && !p.IsStatic)
+                .ToList();
+
             var allProperties = newExpressionProperties.Where(x => parameterProperties.Any(p => p.Name == x.Name) && presentAssignments.All(n => n != x.Name)).ToList();
             return allProperties;
         }
@@ -86,11 +100,13 @@ namespace EntityFrameworkRocket.Refactorings
                 SF.IdentifierName(property.Name));
             // In case of ICollection<>, or a type implementing ICollection<T>, append .ToList()
             bool IsCollection(INamedTypeSymbol t) => t.Name == nameof(ICollection) && t.TypeParameters.Length == 1;
+
             if (property.Type is INamedTypeSymbol type && (IsCollection(type) || type.AllInterfaces.Any(IsCollection)))
             {
                 propertyAccessor = SF.InvocationExpression(SF.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression, propertyAccessor, SF.IdentifierName("ToList")));
             }
+
             return SF.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                 SF.IdentifierName(property.Name),
                 propertyAccessor);

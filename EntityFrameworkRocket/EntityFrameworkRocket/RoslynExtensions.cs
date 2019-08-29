@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Linq.Expressions;
 using EntityFrameworkRocket.Walkers;
@@ -45,15 +46,19 @@ namespace EntityFrameworkRocket
         {
             return refs.Any(p => p.Display.EndsWith(EntityFrameworkConstants.EntityFrameworkClassicDll));
         }
-        public static IEnumerable<INamedTypeSymbol> GetBaseTypesAndThis(this INamedTypeSymbol namedType)
+        public static IEnumerable<ITypeSymbol> GetBaseTypesAndThis(this ITypeSymbol type)
         {
-            var current = namedType;
+            var current = type;
             while (current != null)
             {
                 yield return current;
                 current = current.BaseType;
             }
         }
+
+        public static IEnumerable<INamedTypeSymbol> GetBaseTypesAndThis(this INamedTypeSymbol namedType) 
+            => GetBaseTypesAndThis((ITypeSymbol)namedType).Cast<INamedTypeSymbol>();
+
         public static bool CheckInheritors(this INamedTypeSymbol type, Func<INamedTypeSymbol, bool> predicate)
         {
             return type.GetBaseTypesAndThis().Any(predicate);
