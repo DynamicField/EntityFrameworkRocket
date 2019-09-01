@@ -23,7 +23,7 @@ namespace EntityFrameworkRocket.Refactorings
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
             // Find the node at the selection.
-            var node = root.FindNode(context.Span).FirstAncestorOrSelf<ObjectCreationExpressionSyntax>();
+            var node = root.FindNode(context.Span).FirstAncestorOrSelf<ObjectCreationExpressionSyntax>(x => x.Initializer != null);
             var lambdas = node?.AncestorsAndSelf().OfType<LambdaExpressionSyntax>().ToList();
             // Only offer a refactoring if the selected node is a good node.
             if (node is null || !(node is ObjectCreationExpressionSyntax objectCreation) || !lambdas.Any())
